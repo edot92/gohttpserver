@@ -136,7 +136,6 @@ func main() {
 		fmt.Printf("--- config ---\n%s\n", string(data))
 	}
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
-
 	ss := NewHTTPStaticServer(gcfg.Root)
 	ss.Theme = gcfg.Theme
 	ss.Title = gcfg.Title
@@ -144,7 +143,6 @@ func main() {
 	ss.Upload = gcfg.Upload
 	ss.Delete = gcfg.Delete
 	ss.AuthType = gcfg.Auth.Type
-
 	if gcfg.PlistProxy != "" {
 		u, err := url.Parse(gcfg.PlistProxy)
 		if err != nil {
@@ -171,7 +169,9 @@ func main() {
 	}
 	// CORS
 	if gcfg.Cors {
-		hdlr = handlers.CORS()(hdlr)
+		log.Println("cors enable")
+		corsObj := handlers.AllowedOrigins([]string{"*"})
+		hdlr = handlers.CORS(corsObj)(hdlr)
 	}
 	if gcfg.XHeaders {
 		hdlr = handlers.ProxyHeaders(hdlr)
